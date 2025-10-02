@@ -30,7 +30,7 @@ struct ToDoListView: View {
             }
             .navigationTitle(Text("To Do List"))
             .navigationBarTitleDisplayMode(.automatic)
-            .listStyle(.plain)
+            .listStyle(.automatic)
         }
         
     }
