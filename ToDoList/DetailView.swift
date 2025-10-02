@@ -9,6 +9,8 @@ import SwiftUI
 
 struct DetailView: View {
     
+    var passedValue: String
+    
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -18,7 +20,7 @@ struct DetailView: View {
                 .scaledToFit()
                 .foregroundStyle(.orange)
             
-            Text("You are a Swifty Legend!")
+            Text("You are a Swifty Legend!\n And you passed over the value: \(passedValue)")
                 .font(.largeTitle)
                 .multilineTextAlignment(.center)
             
@@ -34,5 +36,5 @@ struct DetailView: View {
 }
 
 #Preview {
-    DetailView()
+    DetailView(passedValue: "Item xx")
 }
