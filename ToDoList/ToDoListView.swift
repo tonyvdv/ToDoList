@@ -11,17 +11,29 @@ struct ToDoListView: View {
     var body: some View {
         
         NavigationStack {
-            VStack {
-                NavigationLink {
-                    DetailView()
-                } label: {
-                    Image(systemName: "eye")
-                    Text("Show the new view!")
+            List {
+                Section {
+                    NavigationLink {
+                        DetailView()
+                    } label: {
+                        Text("Winter")
+                    }
+                    Text("Summer")
+                } header: {
+                    Text("Breaks")
                 }
-                .buttonStyle(.borderedProminent)
+
+
+                Section {
+                    Text("Spring")
+                    Text("Autumn")
+                } header: {
+                    Text("Semesters")
+                }
                 
             }
-            .padding()
+            .navigationTitle(Text("School Year"))
+            .listStyle(.inset)
         }
         
     }

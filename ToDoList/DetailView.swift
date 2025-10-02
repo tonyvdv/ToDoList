@@ -30,7 +30,6 @@ struct DetailView: View {
             .buttonStyle(.borderedProminent)
         }
         .padding()
-        .navigationBarBackButtonHidden()
     }
 }
 
