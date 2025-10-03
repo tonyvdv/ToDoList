@@ -6,21 +6,26 @@
 //
 
 import SwiftUI
+import SwiftData
+
 
 struct DetailView: View {
     
-    @State var toDo: String
+    @State var toDo: ToDo
+    
+    @State private var item = ""
     @State private var reminderIsOn = false
     @State private var dueDate = Date.now + 60*60*24
     @State private var notes: String = ""
     @State private var isCompleted = false
     
+    @Environment(\.modelContext) var modelContext
     
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         List {
-            TextField("Enter To Do here", text: $toDo)
+            TextField("Enter To Do here", text: $item)
                 .font(.title)
                 .textFieldStyle(.roundedBorder)
                 .padding(.vertical)
@@ -47,6 +52,13 @@ struct DetailView: View {
                 .listRowSeparator(.hidden)
         }
         .listStyle(.plain)
+        .onAppear() {
+            item = toDo.item
+            reminderIsOn = toDo.reminderIsOn
+            dueDate = toDo.dueDate
+            notes = toDo.notes
+            isCompleted = toDo.isCompleted
+        }
         .navigationBarBackButtonHidden()
         
         
@@ -58,7 +70,19 @@ struct DetailView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Save") {
-                    //TODO: save code here
+                    //Move data from local values to toDo object
+                    toDo.item = item
+                    toDo.reminderIsOn = reminderIsOn
+                    toDo.dueDate = dueDate
+                    toDo.notes = notes
+                    toDo.isCompleted = isCompleted
+                    modelContext.insert(toDo)
+                    guard let _ = try? modelContext.save() else {
+                        print ("Failed to save changes")
+                        return
+                    }
+                    dismiss()
+                    
                 }
             }
         }
@@ -68,6 +92,7 @@ struct DetailView: View {
 
 #Preview {
     NavigationStack {
-        DetailView(toDo: "")
+        DetailView(toDo: ToDo())
+            .modelContainer(for: ToDo.self, inMemory: true)
     }
 }
