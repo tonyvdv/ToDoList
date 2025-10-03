@@ -21,14 +21,36 @@ struct ToDoListView: View {
         NavigationStack {
             List {
                 ForEach(toDos) { toDo in
-                    NavigationLink {
-                        DetailView(toDo: toDo)
-                    } label: {
-                        Text(toDo.item)
+                    HStack {
+                        
+                        Image(systemName: toDo.isCompleted ? "checkmark.rectangle" : "rectangle")
+                            .onTapGesture {
+                                toDo.isCompleted.toggle()
+                                guard let _ = try? modelContext.save() else {
+                                    print( "Failed to save Toggle changes.")
+                                    return
+                                }
+                            }
+                            
+                        NavigationLink {
+                            DetailView(toDo: toDo)
+                        } label: {
+                            Text(toDo.item)
+                        }
+                        
+                        .swipeActions {
+                            Button("Delete", role: .destructive) {
+                                modelContext.delete(toDo)
+                                guard let _ = try? modelContext.save() else {
+                                    print( "Failed to save Delete changes.")
+                                    return
+                                    
+                                }
+                            }
+                        }
                     }
                     .font(.title3)
-
-                   
+                    
                 }
             }
             .navigationTitle(Text("To Do List"))
