@@ -21,35 +21,46 @@ struct ToDoListView: View {
         NavigationStack {
             List {
                 ForEach(toDos) { toDo in
-                    HStack {
-                        
-                        Image(systemName: toDo.isCompleted ? "checkmark.rectangle" : "rectangle")
-                            .onTapGesture {
-                                toDo.isCompleted.toggle()
-                                guard let _ = try? modelContext.save() else {
-                                    print( "Failed to save Toggle changes.")
-                                    return
+                    VStack (alignment: .leading){
+                        HStack {
+                            
+                            Image(systemName: toDo.isCompleted ? "checkmark.rectangle" : "rectangle")
+                                .onTapGesture {
+                                    toDo.isCompleted.toggle()
+                                    guard let _ = try? modelContext.save() else {
+                                        print( "Failed to save Toggle changes.")
+                                        return
+                                    }
                                 }
+                            
+                            NavigationLink {
+                                DetailView(toDo: toDo)
+                            } label: {
+                                Text(toDo.item)
                             }
                             
-                        NavigationLink {
-                            DetailView(toDo: toDo)
-                        } label: {
-                            Text(toDo.item)
-                        }
-                        
-                        .swipeActions {
-                            Button("Delete", role: .destructive) {
-                                modelContext.delete(toDo)
-                                guard let _ = try? modelContext.save() else {
-                                    print( "Failed to save Delete changes.")
-                                    return
-                                    
+                            .swipeActions {
+                                Button("Delete", role: .destructive) {
+                                    modelContext.delete(toDo)
+                                    guard let _ = try? modelContext.save() else {
+                                        print( "Failed to save Delete changes.")
+                                        return
+                                        
+                                    }
                                 }
+                            }
+                        }
+                        .font(.title3)
+                        
+                        HStack {
+                            Text(toDo.dueDate.formatted(date: .abbreviated, time: .shortened))
+                                .foregroundStyle(.secondary)
+                            if toDo.reminderIsOn {
+                                Image(systemName: "calendar.badge.clock")
+                                    .symbolRenderingMode(.multicolor)
                             }
                         }
                     }
-                    .font(.title3)
                     
                 }
             }
@@ -80,5 +91,5 @@ struct ToDoListView: View {
 
 #Preview {
     ToDoListView()
-        .modelContainer(for: ToDo.self, inMemory: true)
+        .modelContainer(ToDo.preview)
 }
